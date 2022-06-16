@@ -51,7 +51,7 @@ public class RichLinkCollection
     /// <returns><see cref="OpenApiSchema"/>.</returns>
     public static OpenApiSchema GetOpenApiSchema() => new()
     {
-        Title = "Link collection",
+        Title = "Rich link collection",
         Type = "object",
         Properties = new Dictionary<string, OpenApiSchema>()
         {
