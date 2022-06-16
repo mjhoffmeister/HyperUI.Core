@@ -22,7 +22,7 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Pack
-      run: dotnet pack -c Release -o . HyperUI.Core.NET/HyperUI.Core.NET.csproj
+      run: dotnet pack -c Release -o . HyperUI.Core/HyperUI.Core.csproj
     - name: Publish NuGet
       run: dotnet nuget push *.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
         
