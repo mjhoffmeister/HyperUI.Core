@@ -7,22 +7,23 @@ namespace HyperUI.Core;
 /// <summary>
 /// Represents a collection of links.
 /// </summary>
-public class LinkCollection
+public class RichLinkCollection
 {
     /// <summary>
     /// Default constructor for JSON serialization.
     /// </summary>
-    public LinkCollection()
+    public RichLinkCollection()
     {
 
     }
 
     /// <summary>
-    /// Creates a new <see cref="LinkCollection"/>.
+    /// Creates a new <see cref="RichLinkCollection"/>.
     /// </summary>
     /// <param name="links">Links.</param>
     /// <param name="renderMode">Render mode.</param>
-    public LinkCollection(IEnumerable<Link> links, LinkCollectionRenderMode? renderMode = null)
+    public RichLinkCollection(
+        IEnumerable<RichLink> links, RichLinkCollectionRenderMode? renderMode = null)
     {
         Links = links;
 
@@ -34,17 +35,18 @@ public class LinkCollection
     /// Links.
     /// </summary>
     [JsonPropertyName("links")]
-    public IEnumerable<Link>? Links { get; set; }
+    public IEnumerable<RichLink>? Links { get; set; }
 
     /// <summary>
     /// Render mode. Defaults to grid.
     /// </summary>
-    [JsonConverter(typeof(LinkCollectionRenderModeJsonConverter))]
+    [JsonConverter(typeof(RichLinkCollectionRenderModeJsonConverter))]
     [JsonPropertyName("renderMode")]
-    public LinkCollectionRenderMode RenderMode { get; set; } = LinkCollectionRenderMode.Default;
+    public RichLinkCollectionRenderMode RenderMode { get; set; } = 
+        RichLinkCollectionRenderMode.Default;
 
     /// <summary>
-    /// Gets the <see cref="OpenApiSchema"/> for <see cref="LinkCollection"/>.
+    /// Gets the <see cref="OpenApiSchema"/> for <see cref="RichLinkCollection"/>.
     /// </summary>
     /// <returns><see cref="OpenApiSchema"/>.</returns>
     public static OpenApiSchema GetOpenApiSchema() => new()
@@ -70,7 +72,7 @@ public class LinkCollection
             {
                 ReadOnly = true,
                 Type = "string",
-                Enum = LinkCollectionRenderMode
+                Enum = RichLinkCollectionRenderMode
                     .GetAll()
                     .Select(renderMode => new OpenApiString(renderMode.Name))
                     .ToList<IOpenApiAny>()

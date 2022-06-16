@@ -4,25 +4,25 @@ using System.Text.Json.Serialization;
 namespace HyperUI.Core;
 
 /// <summary>
-/// JSON converter for the <see cref="LinkCollectionRenderMode"/> type.
+/// JSON converter for the <see cref="RichLinkCollectionRenderMode"/> type.
 /// </summary>
-public class LinkCollectionRenderModeJsonConverter : JsonConverter<LinkCollectionRenderMode>
+public class RichLinkCollectionRenderModeJsonConverter : JsonConverter<RichLinkCollectionRenderMode>
 {
     /// <inheritdoc/>
-    public override LinkCollectionRenderMode? Read(
+    public override RichLinkCollectionRenderMode? Read(
         ref Utf8JsonReader reader,
         Type typeToConvert,
         JsonSerializerOptions options)
     {
-        return LinkCollectionRenderMode.TryParse(
+        return RichLinkCollectionRenderMode.TryParse(
             reader.GetString(),
-            LinkCollectionRenderMode.Default);
+            RichLinkCollectionRenderMode.Default);
     }
 
     /// <inheritdoc/>
     public override void Write(
         Utf8JsonWriter writer,
-        LinkCollectionRenderMode value,
+        RichLinkCollectionRenderMode value,
         JsonSerializerOptions options)
     {
         writer.WriteStringValue(value.Name);

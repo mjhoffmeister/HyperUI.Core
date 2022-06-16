@@ -6,23 +6,23 @@ namespace HyperUI.Core;
 /// <summary>
 /// Represents a link.
 /// </summary>
-public class Link
+public class RichLink
 {
     /// <summary>
     /// Default constructor for JSON serialization.
     /// </summary>
-    public Link()
+    public RichLink()
     {
 
     }
 
     /// <summary>
-    /// Creates a new <see cref="Link"/>.
+    /// Creates a new <see cref="RichLink"/>.
     /// </summary>
     /// <param name="id">Id.</param>
     /// <param name="description">Description.</param>
     /// <param name="icon">Icon.</param>
-    public Link(string id, string? description = null, string? icon = null)
+    public RichLink(string id, string? description = null, string? icon = null)
     {
         Description = description;
         Icon = icon;
@@ -48,7 +48,7 @@ public class Link
     public string? Icon { get; set; }
 
     /// <summary>
-    /// Gets the <see cref="OpenApiSchema"/> for <see cref="Link"/>.
+    /// Gets the <see cref="OpenApiSchema"/> for <see cref="RichLink"/>.
     /// </summary>
     /// <returns><see cref="OpenApiSchema"/>.</returns>
     public static OpenApiSchema GetOpenApiSchema() => new()
