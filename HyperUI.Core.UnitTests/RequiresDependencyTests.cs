@@ -4,7 +4,7 @@ using Microsoft.OpenApi.Models;
 
 namespace HyperUI.Core.UnitTests;
 
-public static class RequiresDependencyTest
+public static class RequiresDependencyTests
 {
     /// <summary>
     /// Tests that property values aren't set if they aren't provided.

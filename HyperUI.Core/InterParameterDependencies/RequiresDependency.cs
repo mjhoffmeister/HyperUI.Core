@@ -27,26 +27,26 @@ public class RequiresDependency
     /// <summary>
     /// Creates a new <see cref="RequiresDependency"/>.
     /// </summary>
-    /// <param name="dependantProperty">Dependant property.</param>
+    /// <param name="dependantPropertyKey">Dependant property key.</param>
     /// <param name="dependantPropertyValue">Dependant property value.</param>
-    /// <param name="prerequisiteProperty">Prerequisite property.</param>
+    /// <param name="prerequisitePropertyKey">Prerequisite property key.</param>
     /// <param name="prerequisitePropertyValue">Prerequisite property value.</param>
     private RequiresDependency(
-        KeyValuePair<string, OpenApiSchema> dependantProperty,
+        string dependantPropertyKey,
         object? dependantPropertyValue,
-        KeyValuePair<string, OpenApiSchema> prerequisiteProperty,
+        string prerequisitePropertyKey,
         object? prerequisitePropertyValue)
     {
-        DependantProperty = dependantProperty;
+        DependantPropertyKey = dependantPropertyKey;
         DependantPropertyValue = dependantPropertyValue;
-        PrerequisiteProperty = prerequisiteProperty;
+        PrerequisitePropertyKey = prerequisitePropertyKey;
         PrerequisitePropertyValue = prerequisitePropertyValue;
     }
 
     /// <summary>
     /// Dependant property. That is, the consequent (after the THEN.)
     /// </summary>
-    public KeyValuePair<string, OpenApiSchema> DependantProperty { get; }
+    public string DependantPropertyKey { get; }
 
     /// <summary>
     /// Dependant property value.
@@ -56,7 +56,7 @@ public class RequiresDependency
     /// <summary>
     /// Prerequisite property. That is, the antecedent (after the IF.)
     /// </summary>
-    public KeyValuePair<string, OpenApiSchema> PrerequisiteProperty { get; }
+    public string PrerequisitePropertyKey { get; }
 
     /// <summary>
     /// Prerequisite property value.
@@ -64,14 +64,14 @@ public class RequiresDependency
     public object? PrerequisitePropertyValue { get; }
 
     /// <summary>
-    /// Creates the Open API specification for a "requires" inter-dependency.
+    /// Creates an IDL4AOS specification for a "requires" dependency between properties.
     /// </summary>
     /// <param name="prerequisitePropertyName">Prerequisite property name.</param>
     /// <param name="dependantPropertyName">Dependant property name.</param>
     /// <param name="prerequisitePropertyValue">Prerequisite property value.</param>
     /// <param name="dependantPropertyValue">Dependant property value.</param>
-    /// <returns></returns>
-    public static OpenApiString CreateOpenApiSpecification(
+    /// <returns>The IDL4AOS "requires" specification.</returns>
+    internal static OpenApiString CreateOpenApiSpecification(
         string prerequisitePropertyName,
         string dependantPropertyName,
         object? prerequisitePropertyValue = null,
@@ -106,7 +106,7 @@ public class RequiresDependency
     }
 
     /// <summary>
-    /// Tries to create a <see cref="RequiresDependency"/> from a specification and an
+    /// Tries to create a <see cref="RequiresDependency"/> from a specification in an
     /// <see cref="OpenApiSchema"/>.
     /// </summary>
     /// <param name="specification">Specification.</param>
@@ -114,30 +114,30 @@ public class RequiresDependency
     /// <returns>
     /// A <see cref="RequiresDependency"/> if successful; <see cref="null"/>, otherwise.
     /// </returns>
-    public static RequiresDependency? TryCreate(string specification, OpenApiSchema schema)
+    internal static RequiresDependency? TryCreate(string specification, OpenApiSchema schema)
     {
         Match match = Regex.Match(specification, _requiresExpression);
 
         if (!match.Success)
             return null;
 
-        // Get property names
-        string prerequisitePropertyName = match.Groups[_prerequisiteGroupName].Value;
-        string dependantPropertyName = match.Groups[_dependantGroupName].Value;
+        // Get property keys
+        string prerequisitePropertyKey = match.Groups[_prerequisiteGroupName].Value;
+        string dependantPropertyKey = match.Groups[_dependantGroupName].Value;
 
         // Reference properties
         IDictionary<string, OpenApiSchema> properties = schema.Properties;
 
         // Return null if either the prerequisite or dependant property is missing
-        if (!properties.ContainsKey(prerequisitePropertyName) || 
-            !properties.ContainsKey(dependantPropertyName))
+        if (!properties.ContainsKey(prerequisitePropertyKey) || 
+            !properties.ContainsKey(dependantPropertyKey))
         {
             return null;
         }
 
         // Get the dependant property
         KeyValuePair<string, OpenApiSchema> dependantProperty =
-            new(dependantPropertyName, properties[dependantPropertyName]);
+            new(dependantPropertyKey, properties[dependantPropertyKey]);
 
         // Get the dependant property value object, if present
         object? dependantPropertyValue = TryGetPropertyValueObject(
@@ -145,16 +145,16 @@ public class RequiresDependency
 
         // Get the prerequisite property
         KeyValuePair<string, OpenApiSchema> prerequisiteProperty =
-            new(dependantPropertyName, properties[prerequisitePropertyName]);
+            new(dependantPropertyKey, properties[prerequisitePropertyKey]);
 
         // Get the prerequisite property value object, if present
          object? prerequisitePropertyValue = TryGetPropertyValueObject(
-            match.Groups[_prerequisiteValueGroupName].Value, dependantProperty.Value);
+            match.Groups[_prerequisiteValueGroupName].Value, prerequisiteProperty.Value);
 
         return new RequiresDependency(
-            dependantProperty,
+            dependantPropertyKey,
             dependantPropertyValue,
-            prerequisiteProperty,
+            prerequisitePropertyKey,
             prerequisitePropertyValue);
     }
 

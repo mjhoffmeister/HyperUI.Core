@@ -15,14 +15,12 @@ public static class OnlyOneDependencyTests
     /// </summary>
     /// <param name="dataType">Data type.</param>
     /// <param name="expectedGroupCount">Expected group type.</param>
-    [Theory]
-    [InlineData("boolean", 2)]
-    [InlineData("string", 1)]
-    [InlineData("integer", 0)]
-    public static void GetOnlyOnePropertyGroups_MultipleDataTypes_ReturnsExpectedGroupCount(
-        string dataType, int expectedGroupCount)
+    [Fact]
+    public static void GetOnlyOneDependencies_ThreeDependencies_ReturnsThreeOnlyOneDependencies()
     {
         // Arrange
+
+        int expectedOnlyOneDependencyCount = 3;
 
         OpenApiSchema schema = new()
         {
@@ -30,9 +28,10 @@ public static class OnlyOneDependencyTests
             {
                 [InterParameterDependencies.OpenApiExtensionName] = new OpenApiArray()
                 {
-                    OnlyOneDependency.CreateOpenApiSpecification("yes", "no"),
-                    OnlyOneDependency.CreateOpenApiSpecification("approve", "reject"),
-                    OnlyOneDependency.CreateOpenApiSpecification("state", "zip", "province")
+                    InterParameterDependencies.CreateOnlyOneSpecification("yes", "no"),
+                    InterParameterDependencies.CreateOnlyOneSpecification("approve", "reject"),
+                    InterParameterDependencies.CreateOnlyOneSpecification(
+                        "state", "zip", "province")
                 }
             },
             Properties = new Dictionary<string, OpenApiSchema>()
@@ -70,12 +69,11 @@ public static class OnlyOneDependencyTests
 
         // Act
 
-        IEnumerable<Dictionary<string, OpenApiSchema>> onlyOneProperties = schema
-            .GetOnlyOnePropertyGroups(dataType);
+        IEnumerable<OnlyOneDependency> onlyOneDependencies = schema.GetOnlyOneDependencies();
 
         // Assert
 
-        Assert.Equal(expectedGroupCount, onlyOneProperties.Count());
+        Assert.Equal(expectedOnlyOneDependencyCount, onlyOneDependencies.Count());
     }
 
     /// <summary>
@@ -83,11 +81,9 @@ public static class OnlyOneDependencyTests
     /// expected number of properties.
     /// </summary>
     [Fact]
-    public static void GetOnlyOnePropertyGroups_OneDependency_GroupHasExpectedPropertyCount()
+    public static void GetOnlyOneDependencies_OneDependency_HasExpectedPropertyKeyCount()
     {
         // Arrange
-
-        string dataType = OpenApiDataType.Boolean;
 
         int expectedPropertyCount = 2;
 
@@ -97,7 +93,7 @@ public static class OnlyOneDependencyTests
             {
                 [InterParameterDependencies.OpenApiExtensionName] = new OpenApiArray()
                 {
-                    OnlyOneDependency.CreateOpenApiSpecification("yes", "no"),
+                    InterParameterDependencies.CreateOnlyOneSpecification("yes", "no"),
                 }
             },
             Properties = new Dictionary<string, OpenApiSchema>()
@@ -115,11 +111,10 @@ public static class OnlyOneDependencyTests
 
         // Act
 
-        IEnumerable<Dictionary<string, OpenApiSchema>> onlyOneProperties = schema
-            .GetOnlyOnePropertyGroups(dataType);
+        IEnumerable<OnlyOneDependency> onlyOneProperties = schema.GetOnlyOneDependencies();
 
         // Assert
 
-        Assert.Equal(expectedPropertyCount, onlyOneProperties.Single().Count);
+        Assert.Equal(expectedPropertyCount, onlyOneProperties.Single().PropertyKeys.Count());
     }
 }
