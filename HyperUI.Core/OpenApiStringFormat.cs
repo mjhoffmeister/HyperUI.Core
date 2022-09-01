@@ -9,4 +9,14 @@ public static class OpenApiStringFormat
     /// Date format.
     /// </summary>
     public static readonly string Date = "date";
+
+    /// <summary>
+    /// Day of the week.
+    /// </summary>
+    public static readonly string DayOfWeek = "day-of-week";
+
+    /// <summary>
+    /// Time format.
+    /// </summary>
+    public static readonly string Time = "time";
 }
